@@ -60,7 +60,7 @@ public:
 
     // default constructor
     Entity();
-    ~Entity();
+    //~Entity();
 
     void draw_sprite_from_texture_atlas(ShaderProgram* program, GLuint texture_id, int index);
     void update(float delta_time, Entity* player, Entity* objects, int object_count, Map* map);
