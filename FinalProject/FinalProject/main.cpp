@@ -131,6 +131,12 @@ void process_input()
                 g_game_is_running = false;
                 break;
             }
+            case SDLK_RETURN:
+            {
+                // first UI in the scene should ALWAYS BE A TEXTBOX
+                if (g_current_scene->m_state.ui[0].get_wait_flag())
+                    g_current_scene->m_state.ui[0].change_wait_flag();
+            }
         }
 
         const Uint8* key_state = SDL_GetKeyboardState(NULL);

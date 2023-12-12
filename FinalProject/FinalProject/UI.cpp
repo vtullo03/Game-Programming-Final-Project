@@ -17,11 +17,21 @@
 #include "UI.h"
 
 // credit to ninjikin on itch.io
-const char FONT_FILEPATH[] = "HeroSpeak_White_SpriteSheet.png";
+const char FONT_FILEPATH[] = "font.png";
 
 // --- TEXTBOX LOGIC --- 
 
-void const UI::textbox_manager()
+void const UI::simulate_type_delay(float delta_time)
+{
+	text_timer -= delta_time;
+	if (text_timer <= 0.0f)
+	{
+		can_print_next = true;
+		text_timer = max_text_time;
+	}
+}
+
+void const UI::textbox_manager(float delta_time)
 {
 	switch (m_textbox_state)
 	{
@@ -30,14 +40,13 @@ void const UI::textbox_manager()
 		m_textbox_state = LOADTEXT;
 		break;
 	case (LOADTEXT):
-		typewrite_text();
-		m_waiting_for_next = true;
-		m_textbox_state = WAITING;
+		typewrite_text(delta_time);
 		break;
 	case (WAITING):
 		if (!m_waiting_for_next)
 		{
 			m_text_index++;
+			m_current_text.clear();
 			m_textbox_state = LOADTEXT;
 		}
 		break;
@@ -81,10 +90,21 @@ void const UI::load_text()
 	text_file.close();
 }
 
-void const UI::typewrite_text()
+void const UI::typewrite_text(float delta_time)
 {
-	// just to test if this works for now
-	m_current_text = m_text_segments[m_text_index];
+	// end of message -- don't run & hide textbox
+	if (m_text_index == m_text_segments.size() - 1) disable();
+	simulate_type_delay(delta_time); // add a pause between characters
+	if (can_print_next)
+	{
+		m_current_text += m_text_segments[m_text_index][m_text_segment_index];
+		m_text_segment_index++;
+	}
+	if (m_text_segment_index == m_text_segments[m_text_index].size())
+	{
+		m_waiting_for_next = true;
+		m_textbox_state = WAITING;
+	}
 }
 
 void UI::update(float delta_time)
@@ -92,26 +112,28 @@ void UI::update(float delta_time)
 	// if not active -- then can't update, treat like deletion
 	if (!m_is_active) return;
 
-	if (m_ui_type == TEXTBOX) textbox_manager();
+	if (m_ui_type == TEXTBOX) textbox_manager(delta_time);
 }
 
 void UI::render(ShaderProgram * program)
 {
 	// if not active -- then can't render, treat like deletion
 	if (!m_is_active) { return; }
-	if (m_ui_type == TEXTBOX) Utility::draw_text(program, Utility::load_texture(FONT_FILEPATH), m_current_text, 200.0f,
-		1.0f, m_position);
+	if (m_ui_type == TEXTBOX) Utility::draw_text(program, Utility::load_texture(FONT_FILEPATH), m_current_text, 0.25f,
+		-0.045f, m_position);
+	else
+	{
+		float vertices[] = {-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5};
+		float tex_coords[] = { 0.0,  1.0, 1.0,  1.0, 1.0, 0.0,  0.0,  1.0, 1.0, 0.0,  0.0, 0.0 };
 
-	float vertices[] = { -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5 };
-	float tex_coords[] = { 0.0,  1.0, 1.0,  1.0, 1.0, 0.0,  0.0,  1.0, 1.0, 0.0,  0.0, 0.0 };
+		glVertexAttribPointer(program->get_position_attribute(), 2, GL_FLOAT, false, 0, vertices);
+		glEnableVertexAttribArray(program->get_position_attribute());
+		glVertexAttribPointer(program->get_tex_coordinate_attribute(), 2, GL_FLOAT, false, 0, tex_coords);
+		glEnableVertexAttribArray(program->get_tex_coordinate_attribute());
 
-	glVertexAttribPointer(program->get_position_attribute(), 2, GL_FLOAT, false, 0, vertices);
-	glEnableVertexAttribArray(program->get_position_attribute());
-	glVertexAttribPointer(program->get_tex_coordinate_attribute(), 2, GL_FLOAT, false, 0, tex_coords);
-	glEnableVertexAttribArray(program->get_tex_coordinate_attribute());
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	glDisableVertexAttribArray(program->get_position_attribute());
-	glDisableVertexAttribArray(program->get_tex_coordinate_attribute());
+		glDisableVertexAttribArray(program->get_position_attribute());
+		glDisableVertexAttribArray(program->get_tex_coordinate_attribute());
+	}
 }

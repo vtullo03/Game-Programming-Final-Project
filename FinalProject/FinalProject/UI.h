@@ -21,11 +21,16 @@ private:
 	// Used by textboxes
 	TextboxState m_textbox_state;
 	bool m_waiting_for_next = false;
+	bool can_print_next = false;
+	int m_text_segment_index = 0;
+	int m_text_index = 0;
+	int m_textbox_max = 0;
+	float const max_text_time = 2.0f;
+	float text_timer = max_text_time;
 	std::vector<std::string> m_text_segments;
 	std::string m_text_file_input; // all long dialog/textboxes will use .txt files
 	std::string m_current_text;
-	int m_text_index = 0;
-	int m_textbox_max = 0;
+
 public:
 
 	// constructor and deconstructor
@@ -54,7 +59,9 @@ public:
 	void const set_textbox_max(int new_textbox_max) { m_textbox_max = new_textbox_max; };
 
 	// textbox logic
-	void const textbox_manager();
+	void const start_textbox() { m_textbox_state = INIT; }
+	void const textbox_manager(float delta_time);
 	void const load_text();
-	void const typewrite_text();
+	void const simulate_type_delay(float delta_time);
+	void const typewrite_text(float delta_time);
 };
