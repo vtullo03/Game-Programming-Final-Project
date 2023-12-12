@@ -107,12 +107,25 @@ void const UI::typewrite_text(float delta_time)
 	}
 }
 
+void const UI::button_change_size()
+{
+	if (button_is_selected) m_model_matrix = glm::scale(m_model_matrix, glm::vec3(1.1f, 1.1f, 1.0f));
+	else if (!button_is_selected) m_model_matrix = glm::scale(m_model_matrix, glm::vec3(0.9f, 0.9f, 1.0f));
+}
+
 void UI::update(float delta_time)
 {
 	// if not active -- then can't update, treat like deletion
 	if (!m_is_active) return;
 
 	if (m_ui_type == TEXTBOX) textbox_manager(delta_time);
+	else
+	{
+		// reset model before every change
+		m_model_matrix = glm::mat4(1.0f);
+		m_model_matrix = glm::translate(m_model_matrix, m_position);
+		m_model_matrix = glm::scale(m_model_matrix, glm::vec3(m_width, m_height, 1.0f));
+	}
 }
 
 void UI::render(ShaderProgram * program)
@@ -123,8 +136,15 @@ void UI::render(ShaderProgram * program)
 		-0.045f, m_position);
 	else
 	{
-		float vertices[] = {-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5};
+		program->set_model_matrix(m_model_matrix);
+
+		// if not active -- then can't render, treat like deletion
+		if (!m_is_active) { return; }
+
+		float vertices[] = { -0.5, -0.5, 0.5, -0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5 };
 		float tex_coords[] = { 0.0,  1.0, 1.0,  1.0, 1.0, 0.0,  0.0,  1.0, 1.0, 0.0,  0.0, 0.0 };
+
+		glBindTexture(GL_TEXTURE_2D, m_texture_id);
 
 		glVertexAttribPointer(program->get_position_attribute(), 2, GL_FLOAT, false, 0, vertices);
 		glEnableVertexAttribArray(program->get_position_attribute());

@@ -140,6 +140,7 @@
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="Opening.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Selection.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="Utility.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="Move.h" />
     <ClInclude Include="Opening.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Selection.h" />
     <ClInclude Include="ShaderProgram.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="Utility.h" />

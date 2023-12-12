@@ -12,7 +12,6 @@
 class Monster
 {
 private:
-	std::string input_file;
 	std::string name;
 	int starting_speed;
 	int starting_health;
@@ -27,7 +26,7 @@ private:
 public:
 
 	void do_move(Monster& opponent, Move& selected_move);
-	void build_monster();
+	Monster(int health, int speed);
 
 	// setters and getters 
 	void const change_speed(int new_speed);

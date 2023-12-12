@@ -3,6 +3,18 @@
 // SETTERS
 
 /*
+* Initializes a new MONSTER object
+*
+*/
+Monster::Monster(int health, int speed)
+{
+	starting_health = health;
+	starting_speed = speed;
+	current_health = starting_health;
+	current_speed = starting_speed;
+}
+
+/*
 * Changes a MONSTER's speed variable by a certain factor
 * Also changes the battle message to be displayed based on 
 * how successful that change was
@@ -88,21 +100,4 @@ void Monster::do_move(Monster& opponent, Move& selected_move)
 		opponent.change_speed(-selected_move.get_health_change());
 		break;
 	}
-}
-
-/*
-* Initializes a new MONSTER object based on a .txt file
-* 
-* Format for the .txt file is as follows
-* 
-* [NAME]
-* [STARTING HEALTH INT]
-* [STARTING SPEED INT]
-* Moves:
-* MOVE1 NAME, HEALTH CHANGE, SPEED CHANGE
-* MOVE2 NAME, HEALTH CHANGE, SPEED CHANGE
-*/
-void Monster::build_monster()
-{
-	std::string line;
 }

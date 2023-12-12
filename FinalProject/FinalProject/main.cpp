@@ -26,6 +26,7 @@
 #include "UI.h"
 #include "Scene.h"
 #include "Opening.h"
+#include "Selection.h"
 
 // CONSTS
 // window dimensions + viewport
@@ -52,6 +53,7 @@ const float MILLISECONDS_IN_SECOND = 1000.0;
 // ————— GLOBAL VARIABLES ————— //
 Scene* g_current_scene;
 Opening* g_opening;
+Selection* g_selection;
 
 SDL_Window* g_display_window;
 bool g_game_is_running = true;
@@ -102,9 +104,10 @@ void initialise()
 
     // levels setup
     g_opening = new Opening();
+    g_selection = new Selection();
 
     // Start at first level
-    switch_to_scene(g_opening);
+    switch_to_scene(g_selection);
 
     // ————— BLENDING ————— //
     glEnable(GL_BLEND);

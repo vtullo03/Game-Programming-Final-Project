@@ -57,6 +57,9 @@
     <ClCompile Include="Move.cpp">
       <Filter>Source Files\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Selection.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="Move.h">
       <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Selection.h">
+      <Filter>Header Files\Levels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
