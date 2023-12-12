@@ -15,6 +15,7 @@ Selection::~Selection()
 void Selection::initialise()
 {
 	m_state.ui = new UI[3];
+	Scene::set_button_count(3);
 
 	// set first three UIs as buttons
 	for (size_t i = 0; i < 3; ++i)
@@ -36,6 +37,15 @@ void Selection::update(float delta_time)
 	for (size_t i = 0; i < 3; ++i)
 	{
 		m_state.ui[i].update(delta_time);
+		if (i == button_index)
+		{
+			m_state.ui[i].button_selected();
+			m_state.ui[i].button_change_size();
+		}
+		else
+		{
+			m_state.ui[i].button_unselected();
+		}
 	}
 }
 

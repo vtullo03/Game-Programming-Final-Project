@@ -133,12 +133,28 @@ void process_input()
                 // Quit the game with a keystroke
                 g_game_is_running = false;
                 break;
-            }
             case SDLK_RETURN:
-            {
-                // first UI in the scene should ALWAYS BE A TEXTBOX
-                if (g_current_scene->m_state.ui[0].get_wait_flag())
-                    g_current_scene->m_state.ui[0].change_wait_flag();
+                if (g_current_scene == g_opening)
+                {
+                    // first UI in the scene should ALWAYS BE A TEXTBOX
+                    if (g_current_scene->m_state.ui[0].get_wait_flag())
+                        g_current_scene->m_state.ui[0].change_wait_flag();
+                }
+                break;
+            case SDLK_a:
+                if (g_current_scene == g_selection)
+                {
+                    g_current_scene->button_index--;
+                    if (g_current_scene->button_index < 0) g_current_scene->button_index = g_current_scene->button_count;
+                }
+                break;
+            case SDLK_d:
+                if (g_current_scene == g_selection)
+                {
+                    g_current_scene->button_index++;
+                    if (g_current_scene->button_index > g_current_scene->button_count) g_current_scene->button_index = 0;
+                }
+                break;
             }
         }
 

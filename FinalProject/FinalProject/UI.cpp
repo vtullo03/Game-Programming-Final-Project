@@ -110,7 +110,7 @@ void const UI::typewrite_text(float delta_time)
 void const UI::button_change_size()
 {
 	if (button_is_selected) m_model_matrix = glm::scale(m_model_matrix, glm::vec3(1.1f, 1.1f, 1.0f));
-	else if (!button_is_selected) m_model_matrix = glm::scale(m_model_matrix, glm::vec3(0.9f, 0.9f, 1.0f));
+	else if (!button_is_selected) m_model_matrix = glm::scale(m_model_matrix, glm::vec3(1.0f, 1.0f, 1.0f));
 }
 
 void UI::update(float delta_time)

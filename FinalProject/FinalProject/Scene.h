@@ -29,6 +29,12 @@ class Scene {
 public:
     GameState m_state;
 
+    //used only for buttons
+    int button_index = 0;
+    int button_count = 0;
+
+    void const set_button_count(int new_button_count) { button_count = new_button_count; };
+
     virtual void initialise() = 0;
     virtual void update(float delta_time) = 0;
     virtual void render(ShaderProgram* program) = 0;
