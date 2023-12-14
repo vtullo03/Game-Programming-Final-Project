@@ -17,8 +17,9 @@ private:
 	int starting_health;
 	int current_speed = starting_speed;
 	int current_health = starting_health;
+	std::string filepath;
 
-	std::vector<Move> move_set;
+	std::vector<Move*> move_set;
 
 	std::string battle_message;
 	bool is_fainted = false;
@@ -26,10 +27,11 @@ private:
 public:
 
 	void do_move(Monster& opponent, Move& selected_move);
-	Monster(std::string starting_name, int health, int speed);
+	Monster(std::string starting_name, int health, int speed, std::vector<Move*> moves, std::string file);
 
 	// setters and getters 
 	void const change_speed(int new_speed);
 	void const change_health(int new_health);
-	const std::vector<Move> const get_moves();
+	const std::vector<Move*> const get_moves() { return move_set; };
+	const std::string const get_name() { return name; }; // for debugging currently -- maybe delete later?
 };

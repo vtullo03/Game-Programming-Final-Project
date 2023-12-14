@@ -2,7 +2,7 @@
 
 void Battle::set_battle_UI()
 {
-	int move_list_size = player_monster->get_moves().size();
+	size_t move_list_size = player_monster->get_moves().size();
 	m_state.ui = new UI[move_list_size];
 	for (size_t i = 0; i < move_list_size; ++i)
 	{

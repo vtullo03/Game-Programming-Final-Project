@@ -58,6 +58,17 @@ public:
 
     GLuint m_texture_id; // texture
 
+    // physics - collision for all directions
+    bool m_collided_top = false;
+    bool m_collided_bottom = false;
+    bool m_collided_left = false;
+    bool m_collided_right = false;
+
+    // physics - wall collision
+    bool m_wallcheck_left = false;
+    bool m_wallcheck_right = false;
+    float m_wallcheck_offset = 0.15f;
+
     // default constructor
     Entity();
     //~Entity();

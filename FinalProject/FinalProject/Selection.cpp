@@ -1,5 +1,4 @@
 #include "Selection.h"
-#include "Utility.h"
 
 const char BUMBLEBEAR_SELECT_FILEPATH[] = "Bumblebear.png",
 WHOOVES_SELECT_FILEPATH[] = "Whooves.png",
@@ -59,16 +58,24 @@ void Selection::render(ShaderProgram* program)
 
 Monster* Selection::monster_select()
 {
+	Move* primary_move;
+	Move* secondary_move;
 	switch (button_index)
 	{
 	case 0:
-		return new Monster("Bumblebear", 60, 5);
+		primary_move = new Move("Bite", 10, 0, OPP_HEALTH_CHANGE);
+		secondary_move = new Move("Honey Suckle", 10, 0, HEALTH_CHANGE);
+		return new Monster("Bumblebear", 60, 5, std::vector<Move*>{ primary_move, secondary_move }, BUMBLEBEAR_SELECT_FILEPATH);
 		break;
 	case 1:
-		return new Monster("Whooves", 50, 10);
+		primary_move = new Move("Stomp", 10, 0, OPP_HEALTH_CHANGE);
+		secondary_move = new Move("Headbutt", 0, 5, OPP_SPEED_CHANGE);
+		return new Monster("Whooves", 50, 10, std::vector<Move*>{ primary_move, secondary_move }, WHOOVES_SELECT_FILEPATH);
 		break;
 	case 2:
-		return new Monster("Antelion", 40, 15);
+		primary_move = new Move("Claw", 10, 0, OPP_HEALTH_CHANGE);
+		secondary_move = new Move("Frenzy", 0, 10, SPEED_CHANGE);
+		return new Monster("Antelion", 40, 15, std::vector<Move*> { primary_move, secondary_move }, ANTELION_SELECTION_FILEPATH);
 		break;
 	}
 }

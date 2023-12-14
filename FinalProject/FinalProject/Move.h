@@ -23,6 +23,8 @@ private:
 	MoveType move_type;
 
 public:
+	Move(std::string starting_name, int health, int speed, MoveType type);
+
 	// setters
 	void const set_name(std::string new_name) { name = new_name; };
 	void const set_damage(int new_health_change) { health_change = new_health_change; };

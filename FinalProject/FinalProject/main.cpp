@@ -27,6 +27,8 @@
 #include "Scene.h"
 #include "Opening.h"
 #include "Selection.h"
+#include "Overworld.h"
+#include "Battle.h"
 
 // CONSTS
 // window dimensions + viewport
@@ -54,6 +56,8 @@ const float MILLISECONDS_IN_SECOND = 1000.0;
 Scene* g_current_scene;
 Opening* g_opening;
 Selection* g_selection;
+Overworld* g_overworld;
+Battle* g_battle;
 
 SDL_Window* g_display_window;
 bool g_game_is_running = true;
@@ -106,6 +110,8 @@ void initialise()
     // levels setup
     g_opening = new Opening();
     g_selection = new Selection();
+    g_overworld = new Overworld();
+    // The BATTLE class is not here because you want to create a new BATTLE everytime you need one
 
     // Start at first level
     switch_to_scene(g_selection);
@@ -117,6 +123,8 @@ void initialise()
 
 void process_input()
 {
+    if (g_current_scene == g_overworld) g_current_scene->m_state.player->set_movement(glm::vec3(0.0f));
+
     SDL_Event event;
     // check if game is quit
     while (SDL_PollEvent(&event))
@@ -141,8 +149,12 @@ void process_input()
                     if (g_current_scene->m_state.ui[0].get_wait_flag())
                         g_current_scene->m_state.ui[0].change_wait_flag();
                 }
-                if (g_current_scene == g_selection) 
+                if (g_current_scene == g_selection)
+                {
                     party.push_back(g_selection->monster_select());
+                    switch_to_scene(g_overworld);
+                    std::cout << party[0]->get_name();
+                }
                 break;
             case SDLK_a:
                 if (g_current_scene == g_selection)
@@ -162,6 +174,36 @@ void process_input()
         }
 
         const Uint8* key_state = SDL_GetKeyboardState(NULL);
+
+        if (g_current_scene == g_overworld)
+        {
+            if (key_state[SDL_SCANCODE_A])
+            {
+                g_current_scene->m_state.player->move_left();
+                g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->LEFT];
+            }
+            else if (key_state[SDL_SCANCODE_D])
+            {
+                g_current_scene->m_state.player->move_right();
+                g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->RIGHT];
+            }
+            else if (key_state[SDL_SCANCODE_W])
+            {
+                g_current_scene->m_state.player->move_up();
+                g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->UP];
+            }
+            else if (key_state[SDL_SCANCODE_S])
+            {
+                g_current_scene->m_state.player->move_down();
+                g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->DOWN];
+            }
+
+            // ————— NORMALISATION ————— //
+            if (glm::length(g_current_scene->m_state.player->get_movement()) > 1.0f)
+            {
+                g_current_scene->m_state.player->set_movement(glm::normalize(g_current_scene->m_state.player->get_movement()));
+            }
+        }
     }
 }
 
@@ -185,6 +227,26 @@ void update()
         g_current_scene->update(FIXED_TIMESTEP);
 
         delta_time -= FIXED_TIMESTEP;
+    }
+
+    if (g_current_scene == g_overworld)
+    {
+        if (glm::length(g_current_scene->m_state.player->get_movement()) != 0)
+        {
+            g_current_scene->m_state.player->m_animation_time += delta_time;
+            float frames_per_second = (float)1 / 30;
+
+            if (g_current_scene->m_state.player->m_animation_time >= frames_per_second)
+            {
+                g_current_scene->m_state.player->m_animation_time = 0.0f;
+                g_current_scene->m_state.player->m_animation_index++;
+
+                if (g_current_scene->m_state.player->m_animation_index >= g_current_scene->m_state.player->m_animation_frames)
+                {
+                    g_current_scene->m_state.player->m_animation_index = 0;
+                }
+            }
+        }
     }
 }
 
