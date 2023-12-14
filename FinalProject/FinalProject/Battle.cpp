@@ -1,5 +1,7 @@
 #include "Battle.h"
 
+const char FONT_FILEPATH[] = "font.png";
+
 Battle::~Battle()
 {
 	delete m_state.map;
@@ -110,6 +112,19 @@ void Battle::update(float delta_time)
 void Battle::render(ShaderProgram* program)
 {
 	size_t move_list_size = player_monster->get_moves().size();
+	if (player_monster && opp_monster)
+	{
+		Utility::draw_text(program, Utility::load_texture(FONT_FILEPATH), player_monster->get_name(), 0.25f,
+			-0.045f, glm::vec3(-3.0f, -0.75f, 0.0f));
+		Utility::draw_text(program, Utility::load_texture(FONT_FILEPATH), opp_monster->get_name(), 0.25f,
+			-0.045f, glm::vec3(0.75f, -0.75f, 0.0f));
+		std::string player_status = "Health: " + std::to_string(player_monster->get_health());
+		Utility::draw_text(program, Utility::load_texture(FONT_FILEPATH), player_status, 0.25f,
+			-0.045f, glm::vec3(-3.0f, -1.75f, 0.0f));
+		std::string opp_status = "Health: " + std::to_string(opp_monster->get_health());
+		Utility::draw_text(program, Utility::load_texture(FONT_FILEPATH), opp_status, 0.25f,
+			-0.045f, glm::vec3(0.75f, -1.75f, 0.0f));
+	}
 	for (size_t i = 0; i < move_list_size + 2; ++i)
 	{
 		m_state.ui[i].render(program);

@@ -2,6 +2,7 @@
 #include "Monster.h"
 #include "UI.h"
 #include "Move.h"
+#include "Utility.h"
 #include <cstring>
 #include <string>
 
