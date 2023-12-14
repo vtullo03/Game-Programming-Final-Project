@@ -17,7 +17,6 @@ private:
 	int starting_health;
 	int current_speed = starting_speed;
 	int current_health = starting_health;
-	std::string filepath;
 
 	std::vector<Move*> move_set;
 
@@ -27,7 +26,7 @@ private:
 public:
 
 	void do_move(Monster& opponent, Move& selected_move);
-	Monster(std::string starting_name, int health, int speed, std::vector<Move*> moves, std::string file);
+	Monster(std::string starting_name, int health, int speed, std::vector<Move*> moves);
 
 	// setters and getters 
 	void const change_speed(int new_speed);

@@ -86,12 +86,25 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
     // if not active -- then can't update, treat like deletion
     if (!m_is_active) return;
 
+    m_collided_top = false;
+    m_collided_bottom = false;
+    m_collided_left = false;
+    m_collided_right = false;
+
     m_velocity.x = m_movement.x * get_speed();
     m_velocity.y = m_movement.y * get_speed();
 
     // must be calculated seperatedly for seperate collisions
     m_position.x += m_velocity.x * delta_time;
     m_position.y += m_velocity.y * delta_time;
+
+    m_position.y += m_velocity.y * delta_time;
+    check_collision_y(objects, object_count);
+    //check_collision_y(map);
+
+    m_position.x += m_velocity.x * delta_time;
+    check_collision_x(objects, object_count);
+    //check_collision_x(map);
 
     // reset model before every change
     m_model_matrix = glm::mat4(1.0f);
@@ -117,6 +130,11 @@ void const Entity::check_collision_y(Entity* collidable_entities, int collidable
 
         if (check_collision(collidable_entity))
         {
+            if (m_entity_type == OPP_MONSTER && collidable_entity->m_entity_type == PLAYER)
+            {
+                std::cout << "AA";
+                start_battle = true;
+            }
             float y_distance = fabs(m_position.y - collidable_entity->get_position().y);
             float y_overlap = fabs(y_distance - (m_height / 2.0f) - (collidable_entity->get_height() / 2.0f));
             if (m_velocity.y > 0) {
@@ -229,6 +247,11 @@ void const Entity::check_collision_x(Entity* collidable_entities, int collidable
 
         if (check_collision(collidable_entity))
         {
+            if (m_entity_type == OPP_MONSTER && collidable_entity->m_entity_type == PLAYER)
+            {
+                std::cout << "AA";
+                start_battle = true;
+            }
             float x_distance = fabs(m_position.x - collidable_entity->get_position().x);
             float x_overlap = fabs(x_distance - (m_width / 2.0f) - (collidable_entity->get_width() / 2.0f));
             if (m_velocity.x > 0) {

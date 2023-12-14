@@ -247,6 +247,22 @@ void update()
                 }
             }
         }
+
+        // make this not hard coded later
+        for (size_t i = 0; i < 5; ++i)
+        {
+            // make sure there is monster initialzed before checking
+            // if they want to start a battle
+            if (g_current_scene->m_state.opp_monsters)
+            {
+                if (g_current_scene->m_state.opp_monsters[i].start_battle)
+                {
+                    Battle* new_battle = new Battle();
+                    new_battle->set_battle_monsters(party[0], g_current_scene->m_state.opp_monsters[i].get_monster_obj());
+                    switch_to_scene(new_battle);
+                }
+            }
+        }
     }
 }
 

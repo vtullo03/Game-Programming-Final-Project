@@ -6,7 +6,7 @@
 * Initializes a new MONSTER object
 *
 */
-Monster::Monster(std::string starting_name, int health, int speed, std::vector<Move*> moves, std::string file)
+Monster::Monster(std::string starting_name, int health, int speed, std::vector<Move*> moves)
 {
 	name = starting_name;
 	starting_health = health;

@@ -1,6 +1,8 @@
 #include "Scene.h"
 #include "Utility.h"
 #include "Map.h"
+#include "Monster.h"
+#include "Move.h"
 
 class Overworld : public Scene {
 

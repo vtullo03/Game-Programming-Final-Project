@@ -65,17 +65,17 @@ Monster* Selection::monster_select()
 	case 0:
 		primary_move = new Move("Bite", 10, 0, OPP_HEALTH_CHANGE);
 		secondary_move = new Move("Honeysuckle", 10, 0, HEALTH_CHANGE);
-		return new Monster("Bumblebear", 60, 5, std::vector<Move*>{ primary_move, secondary_move }, BUMBLEBEAR_SELECT_FILEPATH);
+		return new Monster("Bumblebear", 60, 5, std::vector<Move*>{ primary_move, secondary_move });
 		break;
 	case 1:
 		primary_move = new Move("Stomp", 10, 0, OPP_HEALTH_CHANGE);
 		secondary_move = new Move("Headbutt", 0, 5, OPP_SPEED_CHANGE);
-		return new Monster("Whooves", 50, 10, std::vector<Move*>{ primary_move, secondary_move }, WHOOVES_SELECT_FILEPATH);
+		return new Monster("Whooves", 50, 10, std::vector<Move*>{ primary_move, secondary_move });
 		break;
 	case 2:
 		primary_move = new Move("Claw", 10, 0, OPP_HEALTH_CHANGE);
 		secondary_move = new Move("Frenzy", 0, 10, SPEED_CHANGE);
-		return new Monster("Antelion", 40, 15, std::vector<Move*> { primary_move, secondary_move }, ANTELION_SELECTION_FILEPATH);
+		return new Monster("Antelion", 40, 15, std::vector<Move*> { primary_move, secondary_move });
 		break;
 	}
 }

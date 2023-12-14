@@ -3,6 +3,7 @@
 enum EntityType { PLAYER, OPP_MONSTER };
 
 #include "Map.h"
+#include "Monster.h"
 
 class Entity {
 private:
@@ -32,6 +33,9 @@ private:
     EntityType m_entity_type; // treat as object type not name this time
 
 public:
+    bool start_battle = false;
+    Monster* opp_monster_obj = NULL;
+
     // ————— STATIC VARIABLES ————— //
     static const int    SECONDS_PER_FRAME = 4;
     static const int    LEFT = 0,
@@ -103,6 +107,7 @@ public:
     float        const get_height()         const { return m_height; };
     float      const get_speed()          const { return m_speed; };
     bool       const get_active_state()   const { return m_is_active; };
+    Monster*    const get_monster_obj()    const { return opp_monster_obj; };
 
     // SETTLERS
     void const set_entity_type(EntityType new_entity_type) { m_entity_type = new_entity_type; };
@@ -113,6 +118,7 @@ public:
     void const set_width(float new_width) { m_width = new_width; };
     void const set_height(float new_height) { m_height = new_height; };
     void const set_speed(float new_speed) { m_speed = new_speed; };
+    void const set_monster_obj(Monster* new_monster) { opp_monster_obj = new_monster; };
 
     void const disable() { m_is_active = false; };
     void const enable() { m_is_active = true; };

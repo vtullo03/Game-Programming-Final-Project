@@ -44,12 +44,21 @@ void Overworld::initialise()
         m_state.opp_monsters[i].set_height(2.0f);
     }
 
-    m_state.opp_monsters[0].set_position(glm::vec3(0.0f, 3.0f, 0.0f));
+    m_state.opp_monsters[0].set_position(glm::vec3(0.0f, 6.0f, 0.0f));
     m_state.opp_monsters[0].m_texture_id = Utility::load_texture(GOG_FILEPATH);
+    Move* primary_move = new Move("Blizzard", 0, -10, SPEED_CHANGE);
+    Move* secondary_move = new Move("Avalanche", -20, 0, HEALTH_CHANGE);
+    m_state.opp_monsters[0].set_monster_obj(new Monster("GogLordofTheMountain",
+        100, 10, std::vector<Move*>{primary_move, secondary_move}));
+
     for (int i = 1; i < 5; ++i)
     {
         m_state.opp_monsters[i].m_texture_id = Utility::load_texture(HIDEYNA_FILEPATH);
-        m_state.opp_monsters[i].set_position(glm::vec3(-1.0f + i, -1.0f, 0.0f));
+        m_state.opp_monsters[i].set_position(glm::vec3(-2.0f + i, -3.0f, 0.0f));
+        Move* primary_move = new Move("Camouflage", 0, 5, OPP_SPEED_CHANGE);
+        Move* secondary_move = new Move("Bite", 10, 0, HEALTH_CHANGE);
+        m_state.opp_monsters[0].set_monster_obj(new Monster("Hideyna",
+            20, 10, std::vector<Move*>{primary_move, secondary_move}));
     }
 }
 
@@ -59,7 +68,7 @@ void Overworld::update(float delta_time)
 	m_state.player->update(delta_time, m_state.player, NULL, 0, m_state.map);
     for (int i = 0; i < 5; ++i)
     {
-        m_state.opp_monsters->update(delta_time, m_state.player, m_state.player, 1, m_state.map);
+        m_state.opp_monsters[i].update(delta_time, m_state.player, m_state.player, 1, m_state.map);
     }
 }
 
@@ -68,6 +77,6 @@ void Overworld::render(ShaderProgram* program)
 	m_state.player->render(program);
     for (int i = 0; i < 5; ++i)
     {
-        m_state.opp_monsters->render(program);
+        m_state.opp_monsters[i].render(program);
     }
 }

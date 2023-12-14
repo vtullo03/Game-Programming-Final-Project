@@ -45,9 +45,19 @@ void Battle::initialise()
 void Battle::update(float delta_time)
 {
 	simulate_battle();
+
+	size_t move_list_size = player_monster->get_moves().size();
+	for (size_t i = 0; i < move_list_size; ++i)
+	{
+		m_state.ui[i].update(delta_time);
+	}
 }
 
-void render(ShaderProgram* program)
+void Battle::render(ShaderProgram* program)
 {
-
+	size_t move_list_size = player_monster->get_moves().size();
+	for (size_t i = 0; i < move_list_size; ++i)
+	{
+		m_state.ui[i].render(program);
+	}
 }
