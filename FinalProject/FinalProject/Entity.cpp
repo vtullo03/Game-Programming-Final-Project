@@ -96,6 +96,7 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
     // reset model before every change
     m_model_matrix = glm::mat4(1.0f);
     m_model_matrix = glm::translate(m_model_matrix, m_position);
+    m_model_matrix = glm::scale(m_model_matrix, glm::vec3(m_width, m_height, 1.0f));
 }
 
 /*

@@ -1,6 +1,6 @@
 #pragma once
 
-enum EntityType { PLAYER };
+enum EntityType { PLAYER, OPP_MONSTER };
 
 #include "Map.h"
 

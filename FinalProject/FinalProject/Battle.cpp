@@ -8,6 +8,14 @@ void Battle::set_battle_UI()
 	{
 		m_state.ui[i].set_ui_type(BUTTON);
 		m_state.ui[i].set_position(glm::vec3(0.0f + i, 0.0f, 0.0f));
+		m_state.ui[i].set_width(4.0f);
+		m_state.ui[i].set_height(4.0f);
+		// found c_str() and strcpy_s() in the c++ documentation
+		// documentation is truly a programmer's best friend
+		std::string filepath = player_monster->get_moves()[i]->get_name() + ".png";
+		char* new_filepath = new char[filepath.length() + 1];
+		strcpy_s(new_filepath, filepath.length() + 1, filepath.c_str());
+		m_state.ui[i].m_texture_id = Utility::load_texture(new_filepath);
 	}
 }
 

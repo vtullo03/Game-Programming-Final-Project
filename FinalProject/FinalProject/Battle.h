@@ -2,6 +2,8 @@
 #include "Monster.h"
 #include "UI.h"
 #include "Move.h"
+#include <cstring>
+#include <string>
 
 enum BattleState { PLAYERTURN, PLAYEREXECUTE, OPPTURN, OPPEXECUTE, END };
 

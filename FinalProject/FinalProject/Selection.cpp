@@ -64,7 +64,7 @@ Monster* Selection::monster_select()
 	{
 	case 0:
 		primary_move = new Move("Bite", 10, 0, OPP_HEALTH_CHANGE);
-		secondary_move = new Move("Honey Suckle", 10, 0, HEALTH_CHANGE);
+		secondary_move = new Move("Honeysuckle", 10, 0, HEALTH_CHANGE);
 		return new Monster("Bumblebear", 60, 5, std::vector<Move*>{ primary_move, secondary_move }, BUMBLEBEAR_SELECT_FILEPATH);
 		break;
 	case 1:

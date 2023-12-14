@@ -32,7 +32,7 @@ public:
 	void const set_move_type(MoveType new_move_type) { move_type = new_move_type; };
 
 	// getters
-	const std::string get_name() const { return name; };
+	std::string get_name() const { return name; };
 	const int get_health_change() const { return health_change; };
 	const int get_speed_change() const { return speed_change; };
 	const MoveType get_move_type() const { return move_type; };

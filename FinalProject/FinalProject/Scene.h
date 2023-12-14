@@ -22,6 +22,7 @@ struct GameState
 {
     Map* map;
     Entity* player;
+    Entity* opp_monsters;
     UI* ui;
 };
 
