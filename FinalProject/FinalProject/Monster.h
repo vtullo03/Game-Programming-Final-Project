@@ -31,6 +31,8 @@ public:
 	// setters and getters 
 	void const change_speed(int new_speed);
 	void const change_health(int new_health);
+	int const get_speed() { return current_speed; };
+	int const get_health() { return current_health; };
 	const std::vector<Move*> const get_moves() { return move_set; };
 	const std::string const get_name() { return name; }; // for debugging currently -- maybe delete later?
 };

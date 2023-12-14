@@ -145,6 +145,7 @@ void process_input()
             case SDLK_RETURN:
                 if (g_current_scene == g_opening)
                 {
+                    // if there is supposed to be a textbox in a scene
                     // first UI in the scene should ALWAYS BE A TEXTBOX
                     if (g_current_scene->m_state.ui[0].get_wait_flag())
                         g_current_scene->m_state.ui[0].change_wait_flag();
@@ -262,6 +263,7 @@ void update()
             {
                 if (g_current_scene->m_state.opp_monsters[i].start_battle)
                 {
+                    std::cout << g_current_scene->m_state.opp_monsters[i].get_monster_obj()->get_name();
                     // camera position stays the same even when switching scenes
                     // undo the player follow to reset the camera
                     g_view_matrix = glm::translate(g_view_matrix, glm::vec3(g_current_scene->m_state.player->get_position().x,

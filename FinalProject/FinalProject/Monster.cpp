@@ -37,7 +37,7 @@ void const Monster::change_speed(int new_speed)
 	}
 	else if (current_speed < 0)
 	{
-		current_speed == 0;
+		current_speed = 0;
 		battle_message = name + " cannot lower their speed anymore!";
 	}
 };
@@ -70,7 +70,7 @@ void const Monster::change_health(int new_health)
 	}
 	else if (current_health < 0)
 	{
-		current_speed == 0;
+		current_speed = 0;
 		battle_message = name + " has fainted!";
 		is_fainted = true;
 	}

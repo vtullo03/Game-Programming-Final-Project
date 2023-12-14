@@ -7,9 +7,10 @@ HIDEYNA_FILEPATH[] = "HideynaOverworld.png";
 
 Overworld::~Overworld()
 {
-	delete m_state.map;
-	delete m_state.player;
-	delete[] m_state.ui;
+    delete m_state.map;
+    delete m_state.player;
+    delete m_state.opp_monsters;
+    delete m_state.ui;
 }
 
 void Overworld::initialise()
@@ -57,7 +58,7 @@ void Overworld::initialise()
         m_state.opp_monsters[i].set_position(glm::vec3(-2.0f + i, -3.0f, 0.0f));
         Move* primary_move = new Move("Camouflage", 0, 5, OPP_SPEED_CHANGE);
         Move* secondary_move = new Move("Bite", 10, 0, HEALTH_CHANGE);
-        m_state.opp_monsters[0].set_monster_obj(new Monster("Hideyna",
+        m_state.opp_monsters[i].set_monster_obj(new Monster("Hideyna",
             20, 10, std::vector<Move*>{primary_move, secondary_move}));
     }
 }

@@ -23,11 +23,7 @@ public:
     void render(ShaderProgram* program) override;
 
     // Not Inherited -- Own Functions
-    void set_battle_monsters(Monster* player, Monster* opponent)
-    {
-        player_monster = player; 
-        opp_monster = opponent;
-    }
+    void set_battle_monsters(Monster* player, Monster* opponent);
     void set_battle_UI();
     const BattleState const get_battle_state() { return battle_state; };
     void simulate_battle( );
