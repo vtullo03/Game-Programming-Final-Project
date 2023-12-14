@@ -157,14 +157,14 @@ void process_input()
                 }
                 break;
             case SDLK_a:
-                if (g_current_scene == g_selection)
+                if (g_current_scene == g_selection || g_current_scene == g_battle)
                 {
                     g_current_scene->button_index--;
                     if (g_current_scene->button_index < 0) g_current_scene->button_index = g_current_scene->button_count;
                 }
                 break;
             case SDLK_d:
-                if (g_current_scene == g_selection)
+                if (g_current_scene == g_selection || g_current_scene == g_battle)
                 {
                     g_current_scene->button_index++;
                     if (g_current_scene->button_index > g_current_scene->button_count) g_current_scene->button_index = 0;
@@ -248,6 +248,11 @@ void update()
             }
         }
 
+        // camera follows player's exact position
+        g_view_matrix = glm::mat4(1.0f);
+        g_view_matrix = glm::translate(g_view_matrix, glm::vec3(-g_current_scene->m_state.player->get_position().x,
+            -g_current_scene->m_state.player->get_position().y, 0));
+
         // make this not hard coded later
         for (size_t i = 0; i < 5; ++i)
         {
@@ -257,9 +262,14 @@ void update()
             {
                 if (g_current_scene->m_state.opp_monsters[i].start_battle)
                 {
+                    // camera position stays the same even when switching scenes
+                    // undo the player follow to reset the camera
+                    g_view_matrix = glm::translate(g_view_matrix, glm::vec3(g_current_scene->m_state.player->get_position().x,
+                        g_current_scene->m_state.player->get_position().y, 0));
                     Battle* new_battle = new Battle();
                     new_battle->set_battle_monsters(party[0], g_current_scene->m_state.opp_monsters[i].get_monster_obj());
-                    switch_to_scene(new_battle);
+                    g_battle = new_battle;
+                    switch_to_scene(g_battle);
                 }
             }
         }

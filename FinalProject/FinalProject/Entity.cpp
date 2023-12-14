@@ -130,11 +130,7 @@ void const Entity::check_collision_y(Entity* collidable_entities, int collidable
 
         if (check_collision(collidable_entity))
         {
-            if (m_entity_type == OPP_MONSTER && collidable_entity->m_entity_type == PLAYER)
-            {
-                std::cout << "AA";
-                start_battle = true;
-            }
+            if (m_entity_type == OPP_MONSTER && collidable_entity->m_entity_type == PLAYER) start_battle = true;
             float y_distance = fabs(m_position.y - collidable_entity->get_position().y);
             float y_overlap = fabs(y_distance - (m_height / 2.0f) - (collidable_entity->get_height() / 2.0f));
             if (m_velocity.y > 0) {
@@ -247,11 +243,7 @@ void const Entity::check_collision_x(Entity* collidable_entities, int collidable
 
         if (check_collision(collidable_entity))
         {
-            if (m_entity_type == OPP_MONSTER && collidable_entity->m_entity_type == PLAYER)
-            {
-                std::cout << "AA";
-                start_battle = true;
-            }
+            if (m_entity_type == OPP_MONSTER && collidable_entity->m_entity_type == PLAYER) start_battle = true;
             float x_distance = fabs(m_position.x - collidable_entity->get_position().x);
             float x_overlap = fabs(x_distance - (m_width / 2.0f) - (collidable_entity->get_width() / 2.0f));
             if (m_velocity.x > 0) {

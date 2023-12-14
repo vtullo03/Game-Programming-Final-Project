@@ -4,10 +4,12 @@ void Battle::set_battle_UI()
 {
 	size_t move_list_size = player_monster->get_moves().size();
 	m_state.ui = new UI[move_list_size];
+	Scene::set_button_count(move_list_size);
+
 	for (size_t i = 0; i < move_list_size; ++i)
 	{
 		m_state.ui[i].set_ui_type(BUTTON);
-		m_state.ui[i].set_position(glm::vec3(0.0f + i, 0.0f, 0.0f));
+		m_state.ui[i].set_position(glm::vec3(-3.5f + (i * 2.75f), -2.0f, 0.0f));
 		m_state.ui[i].set_width(4.0f);
 		m_state.ui[i].set_height(4.0f);
 		// found c_str() and strcpy_s() in the c++ documentation
@@ -50,6 +52,15 @@ void Battle::update(float delta_time)
 	for (size_t i = 0; i < move_list_size; ++i)
 	{
 		m_state.ui[i].update(delta_time);
+		if (i == button_index)
+		{
+			m_state.ui[i].button_selected();
+			m_state.ui[i].button_change_size();
+		}
+		else
+		{
+			m_state.ui[i].button_unselected();
+		}
 	}
 }
 
