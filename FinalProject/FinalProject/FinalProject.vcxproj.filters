@@ -60,6 +60,12 @@
     <ClCompile Include="Selection.cpp">
       <Filter>Source Files\Levels</Filter>
     </ClCompile>
+    <ClCompile Include="Overworld.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
+    <ClCompile Include="Battle.cpp">
+      <Filter>Source Files\Levels</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -90,6 +96,12 @@
       <Filter>Header Files\Base</Filter>
     </ClInclude>
     <ClInclude Include="Selection.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Overworld.h">
+      <Filter>Header Files\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Battle.h">
       <Filter>Header Files\Levels</Filter>
     </ClInclude>
   </ItemGroup>

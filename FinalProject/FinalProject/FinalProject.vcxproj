@@ -133,12 +133,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Battle.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Move.cpp" />
     <ClCompile Include="Opening.cpp" />
+    <ClCompile Include="Overworld.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Selection.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
@@ -146,11 +148,13 @@
     <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Battle.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Move.h" />
     <ClInclude Include="Opening.h" />
+    <ClInclude Include="Overworld.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Selection.h" />
     <ClInclude Include="ShaderProgram.h" />

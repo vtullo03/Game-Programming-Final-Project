@@ -16,7 +16,6 @@
 #include "ShaderProgram.h"
 #include "UI.h"
 
-// credit to ninjikin on itch.io
 const char FONT_FILEPATH[] = "font.png";
 
 // --- TEXTBOX LOGIC --- 

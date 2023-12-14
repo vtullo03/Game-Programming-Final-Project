@@ -56,3 +56,19 @@ void Selection::render(ShaderProgram* program)
 		m_state.ui[i].render(program);
 	}
 }
+
+Monster* Selection::monster_select()
+{
+	switch (button_index)
+	{
+	case 0:
+		return new Monster("Bumblebear", 60, 5);
+		break;
+	case 1:
+		return new Monster("Whooves", 50, 10);
+		break;
+	case 2:
+		return new Monster("Antelion", 40, 15);
+		break;
+	}
+}

@@ -66,6 +66,13 @@ public:
     void update(float delta_time, Entity* player, Entity* objects, int object_count, Map* map);
     void render(ShaderProgram* program);
 
+    // collisions - both in the x and y axis
+    bool const check_collision(Entity* other) const;
+    void const check_collision_y(Entity* collidable_entities, int collidable_entity_count);
+    void const check_collision_y(Map* map);
+    void const check_collision_x(Entity* collidable_entities, int collidable_entity_count);
+    void const check_collision_x(Map* map);
+
     void activate() { m_is_active = true; };
     void deactivate() { m_is_active = false; };
 

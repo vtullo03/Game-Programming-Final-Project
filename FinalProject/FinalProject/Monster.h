@@ -26,9 +26,10 @@ private:
 public:
 
 	void do_move(Monster& opponent, Move& selected_move);
-	Monster(int health, int speed);
+	Monster(std::string starting_name, int health, int speed);
 
 	// setters and getters 
 	void const change_speed(int new_speed);
 	void const change_health(int new_health);
+	const std::vector<Move> const get_moves();
 };

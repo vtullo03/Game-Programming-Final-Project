@@ -29,10 +29,12 @@ class Scene {
 public:
     GameState m_state;
 
-    //used only for buttons
+    // used only for buttons
+    // button code is in SCENE class instead of the UI class because
+    // we don't want buttons to be responsible for other buttons
+    // probably a cleaner implementation to do this however
     int button_index = 0;
     int button_count = 0;
-
     void const set_button_count(int new_button_count) { button_count = new_button_count; };
 
     virtual void initialise() = 0;

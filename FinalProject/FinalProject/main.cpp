@@ -64,6 +64,7 @@ glm::mat4 g_view_matrix, g_projection_matrix;
 float g_previous_ticks = 0.0f;
 float g_accumulator = 0.0f;
 
+std::vector<Monster*> party;
 
 void switch_to_scene(Scene* scene)
 {
@@ -140,6 +141,8 @@ void process_input()
                     if (g_current_scene->m_state.ui[0].get_wait_flag())
                         g_current_scene->m_state.ui[0].change_wait_flag();
                 }
+                if (g_current_scene == g_selection) 
+                    party.push_back(g_selection->monster_select());
                 break;
             case SDLK_a:
                 if (g_current_scene == g_selection)

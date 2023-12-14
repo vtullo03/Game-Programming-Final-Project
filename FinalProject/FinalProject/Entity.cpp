@@ -60,6 +60,202 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
 }
 
 /*
+* Checks for collisions in the y-axis
+* Iterates through all the entities that are collidable and checks if
+* touching above or below.
+*
+* @param collidable_entities, an array of all entities that this ENTITY can collide with
+* @param collidable_entity_count, size of the array above
+*
+* TREAT LIKE ON_COLLISION_ENTER
+*/
+void const Entity::check_collision_y(Entity* collidable_entities, int collidable_entity_count)
+{
+    for (int i = 0; i < collidable_entity_count; i++)
+    {
+        Entity* collidable_entity = &collidable_entities[i];
+
+        if (check_collision(collidable_entity))
+        {
+            if (m_entity_type == DOOR && collidable_entity->m_entity_type == PLAYER) level_finished = true;
+            if (m_entity_type == CHAIN && collidable_entity->m_entity_type == ENEMY) collidable_entity->disable();
+            if (m_entity_type == ENEMY && collidable_entity->m_entity_type == PLAYER)
+            {
+                std::cout << "RAH";
+                touching_player = true;
+            }
+            float y_distance = fabs(m_position.y - collidable_entity->get_position().y);
+            float y_overlap = fabs(y_distance - (m_height / 2.0f) - (collidable_entity->get_height() / 2.0f));
+            if (m_velocity.y > 0) {
+                m_position.y -= y_overlap;
+                m_velocity.y = 0;
+                m_collided_top = true;
+            }
+            else if (m_velocity.y < 0) {
+                m_position.y += y_overlap;
+                m_velocity.y = 0;
+                m_collided_bottom = true;
+            }
+        }
+    }
+}
+
+/*
+* Check for collisions with the map in the y-axis
+*
+* @param map, MAP object that the ENTITY object is colliding with
+*/
+void const Entity::check_collision_y(Map* map)
+{
+    // Check all tiles above, including left and right for corner interaction
+    glm::vec3 top = glm::vec3(m_position.x, m_position.y + (m_height / 2), m_position.z);
+    glm::vec3 top_left = glm::vec3(m_position.x - (m_width / 2), m_position.y + (m_height / 2), m_position.z);
+    glm::vec3 top_right = glm::vec3(m_position.x + (m_width / 2), m_position.y + (m_height / 2), m_position.z);
+
+    // Check all tiles belove, including left and right for corner interaction
+    glm::vec3 bottom = glm::vec3(m_position.x, m_position.y - (m_height / 2), m_position.z);
+    glm::vec3 bottom_left = glm::vec3(m_position.x - (m_width / 2), m_position.y - (m_height / 2), m_position.z);
+    glm::vec3 bottom_right = glm::vec3(m_position.x + (m_width / 2), m_position.y - (m_height / 2), m_position.z);
+
+    float penetration_x = 0;
+    float penetration_y = 0;
+
+    // REFACTOR LATER
+    if (get_velocity().y > 0)
+    {
+        if (map->is_solid(top, &penetration_x, &penetration_y))
+        {
+            m_position.y -= penetration_y;
+            m_velocity.y = 0;
+            m_collided_top = true;
+        }
+        else if (map->is_solid(top_left, &penetration_x, &penetration_y))
+        {
+            if (!m_wallcheck_left && !m_wallcheck_right)
+            {
+                m_position.y -= penetration_y;
+                m_velocity.y = 0;
+                m_collided_top = true;
+            }
+        }
+        else if (map->is_solid(top_right, &penetration_x, &penetration_y))
+        {
+            if (!m_wallcheck_left && !m_wallcheck_right)
+            {
+                m_position.y -= penetration_y;
+                m_velocity.y = 0;
+                m_collided_top = true;
+            }
+        }
+    }
+    else if (get_velocity().y < 0)
+    {
+
+        if (map->is_solid(bottom, &penetration_x, &penetration_y))
+        {
+            m_position.y += penetration_y;
+            m_velocity.y = 0;
+            m_collided_bottom = true;
+        }
+        else if (map->is_solid(bottom_left, &penetration_x, &penetration_y))
+        {
+            if (!m_wallcheck_left && !m_wallcheck_right)
+            {
+                m_position.y += penetration_y;
+                m_velocity.y = 0;
+                m_collided_bottom = true;
+            }
+        }
+        else if (map->is_solid(bottom_right, &penetration_x, &penetration_y))
+        {
+            if (!m_wallcheck_left && !m_wallcheck_right)
+            {
+                m_position.y += penetration_y;
+                m_velocity.y = 0;
+                m_collided_bottom = true;
+            }
+        }
+    }
+}
+
+/*
+* Checks for collisions with other ENTITY objects in the x-axis
+* Iterates through all the entities that are collidable and checks if
+* touching to left or right.
+*
+* @param collidable_entities, an array of all entities that this ENTITY can collide with
+* @param collidable_entity_count, size of the array above
+*
+* TREAT LIKE ON_COLLISION_ENTER
+*/
+void const Entity::check_collision_x(Entity* collidable_entities, int collidable_entity_count)
+{
+    for (int i = 0; i < collidable_entity_count; i++)
+    {
+        Entity* collidable_entity = &collidable_entities[i];
+
+        if (check_collision(collidable_entity))
+        {
+            if (m_entity_type == DOOR && collidable_entity->m_entity_type == PLAYER) level_finished = true;
+            if (m_entity_type == CHAIN && collidable_entity->m_entity_type == ENEMY) collidable_entity->disable();
+            if (m_entity_type == ENEMY && collidable_entity->m_entity_type == PLAYER)
+            {
+                std::cout << "RAH";
+                touching_player = true;
+            }
+            float x_distance = fabs(m_position.x - collidable_entity->get_position().x);
+            float x_overlap = fabs(x_distance - (m_width / 2.0f) - (collidable_entity->get_width() / 2.0f));
+            if (m_velocity.x > 0) {
+                m_position.x -= x_overlap;
+                m_velocity.x = 0;
+                m_collided_right = true;
+            }
+            else if (m_velocity.x < 0) {
+                m_position.x += x_overlap;
+                m_velocity.x = 0;
+                m_collided_left = true;
+            }
+        }
+    }
+}
+
+/*
+* Check for collisions with the map in the x-axis
+*
+* @param map, MAP object that the ENTITY object is colliding with
+*/
+void const Entity::check_collision_x(Map* map)
+{
+    // Check if touching tile
+    glm::vec3 left = glm::vec3(m_position.x - (m_width / 2), m_position.y, m_position.z);
+    glm::vec3 right = glm::vec3(m_position.x + (m_width / 2), m_position.y, m_position.z);
+
+    // Check if touching wall
+    glm::vec3 left_wall = left - glm::vec3(m_wallcheck_offset, 0.0f, 0.0f);
+    glm::vec3 right_wall = right + glm::vec3(m_wallcheck_offset, 0.0f, 0.0f);
+
+    float penetration_x = 0;
+    float penetration_y = 0;
+
+    // entity collision checks
+    if (map->is_solid(left, &penetration_x, &penetration_y) && m_velocity.x < 0)
+    {
+        m_position.x += penetration_x;
+        m_velocity.x = 0;
+        m_collided_left = true;
+    }
+    if (map->is_solid(right, &penetration_x, &penetration_y) && m_velocity.x > 0)
+    {
+        m_position.x -= penetration_x;
+        m_velocity.x = 0;
+        m_collided_right = true;
+    }
+
+    if (map->is_solid(left_wall, &penetration_x, &penetration_y)) m_wallcheck_left = true;
+    if (map->is_solid(right_wall, &penetration_x, &penetration_y)) m_wallcheck_right = true;
+}
+
+/*
 * Render function specifically for the ENTITY class
 *
 * @param program, reference to the SHADERPROGRAM class -- to use it's functions
@@ -85,4 +281,23 @@ void Entity::render(ShaderProgram* program)
 
     glDisableVertexAttribArray(program->get_position_attribute());
     glDisableVertexAttribArray(program->get_tex_coordinate_attribute());
+}
+
+/*
+* General check collision function for static object
+*
+* @param other, the other ENTITY class that is being collided with
+*
+* TREAT LIKE NORMAL PHYSICS COLLISION -- STOPS OBJECTS
+*/
+bool const Entity::check_collision(Entity* other) const
+{
+    if (other == this) return false;
+    // If either entity is inactive, there shouldn't be any collision
+    if (!m_is_active || !other->m_is_active) return false;
+
+    float x_distance = fabs(m_position.x - other->m_position.x) - ((m_width + other->m_width) / 2.0f);
+    float y_distance = fabs(m_position.y - other->m_position.y) - ((m_height + other->m_height) / 2.0f);
+
+    return x_distance < 0.0f && y_distance < 0.0f;
 }
