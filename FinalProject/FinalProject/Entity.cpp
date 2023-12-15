@@ -85,11 +85,15 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
 {
     // if not active -- then can't update, treat like deletion
     if (!m_is_active) return;
+    if (monster_type == LITTLEGUY) patrol_ai();
 
     m_collided_top = false;
     m_collided_bottom = false;
     m_collided_left = false;
     m_collided_right = false;
+
+    m_wallcheck_left = false;
+    m_wallcheck_right = false;
 
     m_velocity.x = m_movement.x * get_speed();
     m_velocity.y = m_movement.y * get_speed();
@@ -100,11 +104,11 @@ void Entity::update(float delta_time, Entity* player, Entity* objects, int objec
 
     m_position.y += m_velocity.y * delta_time;
     check_collision_y(objects, object_count);
-    //check_collision_y(map);
+    check_collision_y(map);
 
     m_position.x += m_velocity.x * delta_time;
     check_collision_x(objects, object_count);
-    //check_collision_x(map);
+    check_collision_x(map);
 
     // reset model before every change
     m_model_matrix = glm::mat4(1.0f);
@@ -347,4 +351,13 @@ bool const Entity::check_collision(Entity* other) const
     float y_distance = fabs(m_position.y - other->m_position.y) - ((m_height + other->m_height) / 2.0f);
 
     return x_distance < 0.0f && y_distance < 0.0f;
+}
+
+void Entity::patrol_ai()
+{
+    if (is_facing_right) set_movement(glm::vec3(1.0f, 0.0f, 0.0f));
+    else if (!is_facing_right) set_movement(glm::vec3(-1.0f, 0.0f, 0.0f));
+
+    if (m_wallcheck_right) is_facing_right = false;
+    if (m_wallcheck_left) is_facing_right = true;
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 enum EntityType { PLAYER, OPP_MONSTER, BLANK };
+enum MonsterType { BOSS, LITTLEGUY };
 
 #include "Map.h"
 #include "Monster.h"
@@ -33,8 +34,13 @@ private:
     EntityType m_entity_type; // treat as object type not name this time
 
 public:
+    // BATTLE START VARIABLES
     bool start_battle = false;
     Monster* opp_monster_obj = NULL;
+
+    // LITTLE MONSTER GUY VARIABLES
+    MonsterType monster_type;
+    bool is_facing_right = true;
 
     // ————— STATIC VARIABLES ————— //
     static const int    SECONDS_PER_FRAME = 4;
@@ -97,6 +103,9 @@ public:
     void move_up() { m_movement.y = 1.0f; };
     void move_down() { m_movement.y = -1.0f; };
 
+    // ai for little monster guys
+    void patrol_ai();
+
     // GETTERS
     EntityType const get_entity_type()    const { return m_entity_type; };
     glm::vec3  const get_position()       const { return m_position; };
@@ -119,6 +128,7 @@ public:
     void const set_height(float new_height) { m_height = new_height; };
     void const set_speed(float new_speed) { m_speed = new_speed; };
     void const set_monster_obj(Monster* new_monster) { opp_monster_obj = new_monster; };
+    void const set_monster_type(MonsterType type) { monster_type = type; };
 
     void const disable() { m_is_active = false; };
     void const enable() { m_is_active = true; };
