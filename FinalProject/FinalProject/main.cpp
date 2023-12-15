@@ -154,8 +154,8 @@ void process_input()
                 {
                     party.push_back(g_selection->monster_select());
                     switch_to_scene(g_overworld);
-                    std::cout << party[0]->get_name();
                 }
+                if (g_current_scene == g_battle) g_battle->player_inputted = true;
                 break;
             case SDLK_a:
                 if (g_current_scene == g_selection || g_current_scene == g_battle)
@@ -263,7 +263,6 @@ void update()
             {
                 if (g_current_scene->m_state.opp_monsters[i].start_battle)
                 {
-                    std::cout << g_current_scene->m_state.opp_monsters[i].get_monster_obj()->get_name();
                     // camera position stays the same even when switching scenes
                     // undo the player follow to reset the camera
                     g_view_matrix = glm::translate(g_view_matrix, glm::vec3(g_current_scene->m_state.player->get_position().x,
@@ -275,6 +274,11 @@ void update()
                 }
             }
         }
+    }
+
+    if (g_current_scene == g_battle)
+    {
+        if (g_battle->battle_ended) switch_to_scene(g_overworld);
     }
 }
 

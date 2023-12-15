@@ -25,8 +25,9 @@ private:
 
 public:
 
-	void do_move(Monster& opponent, Move& selected_move);
 	Monster(std::string starting_name, int health, int speed, std::vector<Move*> moves);
+	void do_move(Monster* opponent, Move* selected_move);
+	Move* rand_select_move();
 
 	// setters and getters 
 	void const change_speed(int new_speed);

@@ -25,13 +25,8 @@ Monster::Monster(std::string starting_name, int health, int speed, std::vector<M
 */
 void const Monster::change_speed(int new_speed) 
 { 
-	if (current_speed > 0)
-	{
-		if (new_speed > 0) battle_message = name + "'s speed lowered by " + std::to_string(new_speed);
-		else if (new_speed < 0) battle_message = name + "'s speed raised by " + std::to_string(new_speed);
-		current_speed += new_speed;
-	}
-	else if (current_speed == 0)
+	current_speed += new_speed;
+	if (current_speed == 0)
 	{
 		battle_message = name + " cannot lower their speed anymore!";
 	}
@@ -51,26 +46,15 @@ void const Monster::change_speed(int new_speed)
 */
 void const Monster::change_health(int new_health) 
 { 
-	if (current_health == starting_health)
-	{
-		battle_message = name + " is already at max health ";
-		return;
-	}
-	if (current_health > 0)
-	{
-		if (new_health > 0) battle_message = name + " was healed for " + std::to_string(new_health);
-		else if (new_health < 0) battle_message = name + " was hit for " + std::to_string(new_health);
-		current_health += new_health;	
-		if (current_health > starting_health) current_health = starting_health;
-	}
-	else if (current_health == 0)
+	current_health += new_health;
+	if (current_health == 0)
 	{
 		battle_message = name + " has fainted!";
 		is_fainted = true;
 	}
 	else if (current_health < 0)
 	{
-		current_speed = 0;
+		current_health = 0;
 		battle_message = name + " has fainted!";
 		is_fainted = true;
 	}
@@ -85,21 +69,27 @@ void const Monster::change_health(int new_health)
 * @param opponent, a MONSTER object that serves as your opponent
 * @param selected_move, a MOVE objec that serves as the move being executed
 */
-void Monster::do_move(Monster& opponent, Move& selected_move)
+void Monster::do_move(Monster* opponent, Move* selected_move)
 {
-	switch (selected_move.get_move_type())
+	switch (selected_move->get_move_type())
 	{
 	case (HEALTH_CHANGE):
-		change_health(selected_move.get_health_change());
+		change_health(selected_move->get_health_change());
 		break;
 	case (OPP_HEALTH_CHANGE):
-		opponent.change_health(-selected_move.get_health_change());
+		opponent->change_health(-selected_move->get_health_change());
 		break;
 	case (SPEED_CHANGE):
-		change_speed(selected_move.get_health_change());
+		change_speed(selected_move->get_health_change());
 		break;
 	case (OPP_SPEED_CHANGE):
-		opponent.change_speed(-selected_move.get_health_change());
+		opponent->change_speed(-selected_move->get_health_change());
 		break;
 	}
+}
+
+Move* Monster::rand_select_move()
+{
+	int random_move_index = rand() % move_set.size();
+	return move_set[random_move_index];
 }

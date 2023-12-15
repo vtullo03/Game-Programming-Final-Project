@@ -5,8 +5,10 @@
 #include "Utility.h"
 #include <cstring>
 #include <string>
+#include <stdio.h>
+#include <stdlib.h>
 
-enum BattleState { PLAYERTURN, PLAYEREXECUTE, OPPTURN, OPPEXECUTE, END };
+enum BattleState { PLAYERTURN, PLAYEREXECUTE, OPPTURN, END };
 
 class Battle : public Scene {
 private:
@@ -14,6 +16,10 @@ private:
     Monster* player_monster;
     Monster* opp_monster;
 public:
+    bool battle_ended = false;
+    bool player_turn = false;
+    bool player_inputted = false;
+
     // ————— CONSTRUCTOR ————— //
     ~Battle();
 
@@ -27,5 +33,5 @@ public:
     void set_battle_monsters(Monster* player, Monster* opponent);
     void set_battle_UI();
     const BattleState const get_battle_state() { return battle_state; };
-    void simulate_battle( );
+    void simulate_battle();
 };

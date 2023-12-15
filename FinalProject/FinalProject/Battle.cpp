@@ -68,14 +68,23 @@ void Battle::simulate_battle()
 	switch (battle_state)
 	{
 	case PLAYERTURN:
+		player_turn = true;
+		if (player_inputted) battle_state = PLAYEREXECUTE;
 		break;
 	case PLAYEREXECUTE:
+		player_turn = false;
+		player_inputted = false;
+		player_monster->do_move(opp_monster, player_monster->get_moves()[button_index]);
+		if (player_monster->get_health() == 0) battle_state = END;
+		else battle_state = OPPTURN;
 		break;
 	case OPPTURN:
-		break;
-	case OPPEXECUTE:
+		opp_monster->do_move(player_monster, opp_monster->rand_select_move());
+		if (opp_monster->get_health() == 0) battle_state = END;
+		else battle_state = PLAYERTURN;
 		break;
 	case END:
+		battle_ended = true;
 		break;
 	}
 }
