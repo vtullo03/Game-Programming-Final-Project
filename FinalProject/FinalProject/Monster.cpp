@@ -88,6 +88,9 @@ void Monster::do_move(Monster* opponent, Move* selected_move)
 	}
 }
 
+/*
+* Randomly selects and returns a move from the current monster's moveset
+*/
 Move* Monster::rand_select_move()
 {
 	int random_move_index = rand() % move_set.size();

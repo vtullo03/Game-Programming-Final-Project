@@ -30,6 +30,13 @@ Entity::Entity()
     m_movement = glm::vec3(0.0f);
 }
 
+/*
+* Creates sprites from a spritesheet
+* 
+* @param program, the shader program that renders all the sprites
+* @param texture_id, the id of the sprite sheet
+* @param index, where in the sprite sheet we're trying to pull the sprite from
+*/
 void Entity::draw_sprite_from_texture_atlas(ShaderProgram* program, GLuint texture_id, int index)
 {
     // Step 1: Calculate the UV location of the indexed frame
@@ -353,6 +360,11 @@ bool const Entity::check_collision(Entity* other) const
     return x_distance < 0.0f && y_distance < 0.0f;
 }
 
+/*
+* Patrol AI used by overworld enemies
+* They move either left or right
+* If they hit a wall they will about face
+*/
 void Entity::patrol_ai()
 {
     if (is_facing_right) set_movement(glm::vec3(1.0f, 0.0f, 0.0f));

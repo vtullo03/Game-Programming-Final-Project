@@ -20,6 +20,14 @@ const char FONT_FILEPATH[] = "font.png";
 
 // --- TEXTBOX LOGIC --- 
 
+/*
+* Waits for the UI object's max text time before setting
+* The can print flag to true
+* This creates a pause before each char that is typed out
+* in textboxes
+* 
+* @param delta_time, an accurate measure of time so the delay is accurate
+*/
 void const UI::simulate_type_delay(float delta_time)
 {
 	text_timer -= delta_time;
@@ -30,6 +38,18 @@ void const UI::simulate_type_delay(float delta_time)
 	}
 }
 
+/*
+* Manages the states of the textbox
+* 
+* The STATES:
+* INIT -- Calls load_text func and prepares all the text that needs to be displayed
+* LOADTEXT -- After init, we load the **current** text that is going to be shown to
+* the player
+* WAITING -- Waits for the player's input before moving onto the next text
+* Only move on if there IS text to be displayed and clear the current text before moving on
+* 
+* @param delta_time, an accurate measure of time so the text delay is accurate
+*/
 void const UI::textbox_manager(float delta_time)
 {
 	switch (m_textbox_state)
@@ -52,6 +72,9 @@ void const UI::textbox_manager(float delta_time)
 	}
 }
 
+/*
+* Loads the CURRENT TEXT that needs to be displayed to the player
+*/
 void const UI::load_text()
 {
 	// open some text file -- holds all dialogue for text boxes
@@ -89,6 +112,11 @@ void const UI::load_text()
 	text_file.close();
 }
 
+/*
+* Display each character in the current text to be displayed with a delay
+* 
+* @param delta_time, an accurate measure of time so the delay is accurate
+*/
 void const UI::typewrite_text(float delta_time)
 {
 	// end of message -- don't run & hide textbox
@@ -106,12 +134,20 @@ void const UI::typewrite_text(float delta_time)
 	}
 }
 
+/*
+* The GROWTH effect used by buttons when you select them
+*/
 void const UI::button_change_size()
 {
 	if (button_is_selected) m_model_matrix = glm::scale(m_model_matrix, glm::vec3(1.1f, 1.1f, 1.0f));
 	else if (!button_is_selected) m_model_matrix = glm::scale(m_model_matrix, glm::vec3(1.0f, 1.0f, 1.0f));
 }
 
+/*
+* Update all UI logic -- called every frame
+* 
+* @param delta_time, used by several UI funcs as an accurate measurement of time
+*/
 void UI::update(float delta_time)
 {
 	// if not active -- then can't update, treat like deletion
@@ -127,6 +163,9 @@ void UI::update(float delta_time)
 	}
 }
 
+/*
+* Render all UI elements -- called every frame
+*/
 void UI::render(ShaderProgram * program)
 {
 	// if not active -- then can't render, treat like deletion

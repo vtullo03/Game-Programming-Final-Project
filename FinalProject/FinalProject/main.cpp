@@ -92,12 +92,23 @@ int monster_battling = 0;
 float selection_delay = 2.0f;
 bool can_select = false;
 
+/*
+* Switches to the scene that is passed in
+* 
+* @param scene, a SCENE object that is passed in and initialised
+* Also set at the current scene
+*/
 void switch_to_scene(Scene* scene)
 {
     g_current_scene = scene;
     g_current_scene->initialise();
 }
 
+/*
+* Initialises everything in main such as sound logic,
+* the window, and all the scenes to be used
+* Runs once in the beginning of the game
+*/
 void initialise()
 {
     // ————— VIDEO ————— //
@@ -114,7 +125,7 @@ void initialise()
         AUDIO_BUFF_SIZE      // audio buffer size in sample FRAMES (total samples divided by channel count)
     );
 
-    g_button_sound = Mix_LoadWAV("Diamond_Click.wav");
+    g_button_sound = Mix_LoadWAV("SelectSound.wav"); // button select sound
 
     SDL_GLContext context = SDL_GL_CreateContext(g_display_window);
     SDL_GL_MakeCurrent(g_display_window, context);
@@ -154,8 +165,13 @@ void initialise()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+/*
+* Processes the input from the player
+* Runs every frame
+*/
 void process_input()
 {
+    // When you are in the overworld, there is a movable player -- reset their movement
     if (g_current_scene == g_overworld) g_current_scene->m_state.player->set_movement(glm::vec3(0.0f));
 
     SDL_Event event;
@@ -187,6 +203,12 @@ void process_input()
                 }
                 if (g_current_scene == g_selection && can_select)
                 {
+                    /*
+                    * The selection menu has a very small buffer before you can select a monster
+                    * This is because you are using enter for the dialogue text that's before this
+                    * In the frame that the scene switch occurs you might still be pressing enter
+                    * And accidentally select a monster
+                    */
                     party.push_back(g_selection->monster_select());
                     switch_to_scene(g_overworld);
                 }
@@ -195,6 +217,8 @@ void process_input()
             case SDLK_a:
                 if (g_current_scene == g_selection || g_current_scene == g_battle)
                 {
+                    // Iterate through the array of buttons in the current scene
+                    // And wrap around
                     g_current_scene->button_index--;
                     if (g_current_scene->button_index < 0) g_current_scene->button_index = g_current_scene->button_count;
                     Mix_PlayChannel(
@@ -207,6 +231,8 @@ void process_input()
             case SDLK_d:
                 if (g_current_scene == g_selection || g_current_scene == g_battle)
                 {
+                    // Iterate through the array of buttons in the current scene
+                    // And wrap around
                     g_current_scene->button_index++;
                     if (g_current_scene->button_index > g_current_scene->button_count) g_current_scene->button_index = 0;
                     Mix_PlayChannel(
@@ -221,6 +247,8 @@ void process_input()
 
         const Uint8* key_state = SDL_GetKeyboardState(NULL);
 
+        // PLAYER INPUT FOR THE OVERWORLD
+        // Controls movement direction and the animation
         if (g_current_scene == g_overworld)
         {
             if (key_state[SDL_SCANCODE_A])
@@ -258,6 +286,11 @@ void process_input()
     }
 }
 
+/*
+* Updates all objects in the game including entities
+* Also keeps an accurate track of time known as delta time
+* Is called every frame
+*/
 void update()
 {
     // ————— DELTA TIME / FIXED TIME STEP CALCULATION ————— //
@@ -280,24 +313,29 @@ void update()
         delta_time -= FIXED_TIMESTEP;
     }
 
+    // Timer for the input buffer on the selection screen
     if (g_current_scene == g_selection)
     {
         if (!can_select) selection_delay -= delta_time;
         if (selection_delay <= 0.0f) can_select = true;
     }
 
+    // If the boss monster is dead, then you win the game
     if (!monsters_status[0])
     {
         switch_to_scene(g_win);
     }
 
+    // All overworld logic that needs main's information
     if (g_current_scene == g_overworld)
     {
+        // Makes sure the player doesn't continue their animation when not moving
         if (glm::length(g_current_scene->m_state.player->get_movement()) != 0)
         {
             g_current_scene->m_state.player->m_animation_time += delta_time;
             float frames_per_second = (float)1 / 30;
 
+            // Handles animation playback
             if (g_current_scene->m_state.player->m_animation_time >= frames_per_second)
             {
                 g_current_scene->m_state.player->m_animation_time = 0.0f;
@@ -310,24 +348,25 @@ void update()
             }
         }
 
-        // camera follows player's exact position
+        // Camera follows player's exact position
         g_view_matrix = glm::mat4(1.0f);
         g_view_matrix = glm::translate(g_view_matrix, glm::vec3(-g_current_scene->m_state.player->get_position().x,
             -g_current_scene->m_state.player->get_position().y, 0));
 
-        // make this not hard coded later
+        // This probably shouldn't be hard-coded...
         for (size_t i = 0; i < 5; ++i)
         {
-            // make sure there is monster initialzed before checking
+            // Make sure there is monster initialzed before checking
             // if they want to start a battle
             if (g_current_scene->m_state.opp_monsters)
             {
+                // Delete a monster from the overworld if they are killed
                 if (!monsters_status[i]) g_current_scene->m_state.opp_monsters[i].disable();
                 if (g_current_scene->m_state.opp_monsters[i].start_battle)
                 {
                     monster_battling = i;
-                    // camera position stays the same even when switching scenes
-                    // undo the player follow to reset the camera
+                    // Camera position stays the same even when switching scenes
+                    // Undo the player follow to reset the camera
                     g_view_matrix = glm::translate(g_view_matrix, glm::vec3(g_current_scene->m_state.player->get_position().x,
                         g_current_scene->m_state.player->get_position().y, 0));
                     Battle* new_battle = new Battle();
@@ -339,8 +378,14 @@ void update()
         }
     }
 
+    // Battle switch scene logic
     if (g_current_scene == g_battle)
     {
+        /*
+        * If the player's monster is dead by the end of the battle, they lose
+        * If the opponent monster is dead then change their death flag in main
+        * and switch back to the overworld
+        */
         if (g_battle->battle_ended)
         {
             if (g_battle->get_player_monster()->get_health() == 0) switch_to_scene(g_lose);
@@ -350,6 +395,10 @@ void update()
     }
 }
 
+/*
+* Renders and displays all objects in the game
+* Is called every frame
+*/
 void render()
 {
     g_shader_program.set_view_matrix(g_view_matrix);
@@ -361,6 +410,9 @@ void render()
     SDL_GL_SwapWindow(g_display_window);
 }
 
+/*
+* Makes sure to shutdown safely
+*/
 void shutdown()
 {
     SDL_Quit();
