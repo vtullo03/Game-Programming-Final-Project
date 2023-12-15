@@ -9,7 +9,6 @@ void Win::initialise()
 {
 	m_state.ui = new UI[1];
 
-	// set first UI as textbox
 	m_state.ui[0].set_ui_type(BUTTON);
 	m_state.ui[0].set_position(glm::vec3(0.0f));
 	m_state.ui[0].set_width(4.0f);

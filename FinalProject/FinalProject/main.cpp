@@ -89,7 +89,7 @@ std::vector<bool> monsters_status = {true, true, true, true, true};
 int monster_battling = 0;
 
 // needed to buffer input when going from the opening to the selection screen
-float selection_delay = 11.0f;
+float selection_delay = 2.0f;
 bool can_select = false;
 
 void switch_to_scene(Scene* scene)
@@ -280,8 +280,11 @@ void update()
         delta_time -= FIXED_TIMESTEP;
     }
 
-    if (!can_select) selection_delay -= delta_time;
-    if (selection_delay <= 0.0f) can_select = true;
+    if (g_current_scene == g_selection)
+    {
+        if (!can_select) selection_delay -= delta_time;
+        if (selection_delay <= 0.0f) can_select = true;
+    }
 
     if (!monsters_status[0])
     {

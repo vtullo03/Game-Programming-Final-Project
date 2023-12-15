@@ -13,7 +13,7 @@ Opening::~Opening()
 
 void Opening::initialise()
 {
-	m_state.ui = new UI[1];
+	m_state.ui = new UI[2];
 	
 	// set first UI as textbox
 	m_state.ui[0].set_ui_type(TEXTBOX);
@@ -22,6 +22,12 @@ void Opening::initialise()
 	m_state.ui[0].set_textbox_max(39);
 	m_state.ui[0].start_textbox();
 
+	m_state.ui[1].set_ui_type(BUTTON);
+	m_state.ui[1].set_position(glm::vec3(0.0f));
+	m_state.ui[1].set_width(4.0f);
+	m_state.ui[1].set_height(4.0f);
+	m_state.ui[1].m_texture_id = Utility::load_texture("TitleScreen.png");
+
 	g_music = Mix_LoadMUS(BGM_FILEPATH);
 	Mix_PlayMusic(g_music, LOOP_FOREVER);
 	Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
@@ -29,7 +35,7 @@ void Opening::initialise()
 
 void Opening::update(float delta_time)
 {
-	for (size_t i = 0; i < 1; ++i)
+	for (size_t i = 0; i < 2; ++i)
 	{
 		m_state.ui[i].update(delta_time);
 	}
@@ -37,7 +43,7 @@ void Opening::update(float delta_time)
 
 void Opening::render(ShaderProgram* program)
 {
-	for (size_t i = 0; i < 1; ++i)
+	for (size_t i = 0; i < 2; ++i)
 	{
 		m_state.ui[i].render(program);
 	}
