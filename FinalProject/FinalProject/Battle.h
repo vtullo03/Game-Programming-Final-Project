@@ -31,6 +31,8 @@ public:
 
     // Not Inherited -- Own Functions
     void set_battle_monsters(Monster* player, Monster* opponent);
+    Monster* get_player_monster() { return player_monster; };
+    Monster* get_opponent_monster() { return opp_monster; };
     void set_battle_UI();
     const BattleState const get_battle_state() { return battle_state; };
     void simulate_battle();

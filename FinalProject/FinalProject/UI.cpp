@@ -66,7 +66,7 @@ void const UI::load_text()
 		char current_char;
 
 		int counter = 0;
-		while (text_file >> current_char)
+		while (text_file >> std::noskipws >> current_char)
 		{
 			// text box maximum is the max chars we can fit in any given text box 
 			// before it looks strange

@@ -29,6 +29,8 @@
 #include "Selection.h"
 #include "Overworld.h"
 #include "Battle.h"
+#include "Win.h"
+#include "Lose.h"
 
 // CONSTS
 // window dimensions + viewport
@@ -58,6 +60,8 @@ Opening* g_opening;
 Selection* g_selection;
 Overworld* g_overworld;
 Battle* g_battle;
+Win* g_win;
+Lose* g_lose;
 
 SDL_Window* g_display_window;
 bool g_game_is_running = true;
@@ -69,6 +73,12 @@ float g_previous_ticks = 0.0f;
 float g_accumulator = 0.0f;
 
 std::vector<Monster*> party;
+std::vector<bool> monsters_status = {true, true, true, true, true};
+int monster_battling = 0;
+
+// needed to buffer input when going from the opening to the selection screen
+float selection_delay = 11.0f;
+bool can_select = false;
 
 void switch_to_scene(Scene* scene)
 {
@@ -111,10 +121,12 @@ void initialise()
     g_opening = new Opening();
     g_selection = new Selection();
     g_overworld = new Overworld();
+    g_lose = new Lose();
+    g_win = new Win();
     // The BATTLE class is not here because you want to create a new BATTLE everytime you need one
 
     // Start at first level
-    switch_to_scene(g_selection);
+    switch_to_scene(g_opening);
 
     // ————— BLENDING ————— //
     glEnable(GL_BLEND);
@@ -149,8 +161,10 @@ void process_input()
                     // first UI in the scene should ALWAYS BE A TEXTBOX
                     if (g_current_scene->m_state.ui[0].get_wait_flag())
                         g_current_scene->m_state.ui[0].change_wait_flag();
+                    if (!g_current_scene->m_state.ui[0].get_active_flag())
+                        switch_to_scene(g_selection);
                 }
-                if (g_current_scene == g_selection)
+                if (g_current_scene == g_selection && can_select)
                 {
                     party.push_back(g_selection->monster_select());
                     switch_to_scene(g_overworld);
@@ -198,6 +212,11 @@ void process_input()
                 g_current_scene->m_state.player->move_down();
                 g_current_scene->m_state.player->m_animation_indices = g_current_scene->m_state.player->m_walking[g_current_scene->m_state.player->DOWN];
             }
+            else if (key_state[SDL_SCANCODE_H] && key_state[SDL_SCANCODE_LSHIFT])
+            {
+                // debug cheat
+                party[0]->change_health(1000);
+            }
 
             // ————— NORMALISATION ————— //
             if (glm::length(g_current_scene->m_state.player->get_movement()) > 1.0f)
@@ -228,6 +247,14 @@ void update()
         g_current_scene->update(FIXED_TIMESTEP);
 
         delta_time -= FIXED_TIMESTEP;
+    }
+
+    if (!can_select) selection_delay -= delta_time;
+    if (selection_delay <= 0.0f) can_select = true;
+
+    if (!monsters_status[0])
+    {
+        switch_to_scene(g_win);
     }
 
     if (g_current_scene == g_overworld)
@@ -261,8 +288,10 @@ void update()
             // if they want to start a battle
             if (g_current_scene->m_state.opp_monsters)
             {
+                if (!monsters_status[i]) g_current_scene->m_state.opp_monsters[i].disable();
                 if (g_current_scene->m_state.opp_monsters[i].start_battle)
                 {
+                    monster_battling = i;
                     // camera position stays the same even when switching scenes
                     // undo the player follow to reset the camera
                     g_view_matrix = glm::translate(g_view_matrix, glm::vec3(g_current_scene->m_state.player->get_position().x,
@@ -278,7 +307,12 @@ void update()
 
     if (g_current_scene == g_battle)
     {
-        if (g_battle->battle_ended) switch_to_scene(g_overworld);
+        if (g_battle->battle_ended)
+        {
+            if (g_battle->get_player_monster()->get_health() == 0) switch_to_scene(g_lose);
+            if (g_battle->get_opponent_monster()->get_health() == 0) monsters_status[monster_battling] = false;
+            if (g_battle->get_player_monster()->get_health() != 0) switch_to_scene(g_overworld);
+        }
     }
 }
 

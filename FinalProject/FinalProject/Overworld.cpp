@@ -40,7 +40,7 @@ void Overworld::initialise()
 
 	m_state.player = new Entity();
 	m_state.player->set_entity_type(PLAYER);
-	m_state.player->set_position(glm::vec3(7.0f, -4.0f, 0.0f));
+	m_state.player->set_position(glm::vec3(12.0f, -1.0f, 0.0f));
 	m_state.player->set_speed(4.0f);
     m_state.player->m_texture_id = Utility::load_texture(PLAYER_FILEPATH);
 
@@ -78,13 +78,17 @@ void Overworld::initialise()
     for (int i = 1; i < 5; ++i)
     {
         m_state.opp_monsters[i].m_texture_id = Utility::load_texture(HIDEYNA_FILEPATH);
-        m_state.opp_monsters[i].set_position(glm::vec3(11.0f, 0.0f + -i, 0.0f));
         Move* primary_move = new Move("Camouflage", 0, 5, SPEED_CHANGE);
         Move* secondary_move = new Move("Bite", 10, 0, OPP_HEALTH_CHANGE);
         m_state.opp_monsters[i].set_monster_obj(new Monster("Hideyna",
             20, 10, std::vector<Move*>{primary_move, secondary_move}));
         m_state.opp_monsters[i].set_monster_type(LITTLEGUY);
     }
+
+    m_state.opp_monsters[1].set_position(glm::vec3(11.0f, -3.0f, 0.0f));
+    m_state.opp_monsters[2].set_position(glm::vec3(11.0f, -6.0f, 0.0f));
+    m_state.opp_monsters[3].set_position(glm::vec3(8.0f, -7.0f, 0.0f));
+    m_state.opp_monsters[4].set_position(glm::vec3(1.0f, -3.0f, 0.0f));
 }
 
 void Overworld::update(float delta_time)

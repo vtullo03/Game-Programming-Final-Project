@@ -3,8 +3,6 @@
 
 Opening::~Opening()
 {
-	delete m_state.map;
-	delete m_state.player;
 	delete[] m_state.ui;
 }
 
@@ -14,9 +12,9 @@ void Opening::initialise()
 	
 	// set first UI as textbox
 	m_state.ui[0].set_ui_type(TEXTBOX);
-	m_state.ui[0].set_position(glm::vec3(-4.75f, 0.0f, 0.0f));
-	m_state.ui[0].set_text_file_input("Test.txt");
-	m_state.ui[0].set_textbox_max(35);
+	m_state.ui[0].set_position(glm::vec3(-4.75f, -2.0f, 0.0f));
+	m_state.ui[0].set_text_file_input("Opening.txt");
+	m_state.ui[0].set_textbox_max(39);
 	m_state.ui[0].start_textbox();
 }
 

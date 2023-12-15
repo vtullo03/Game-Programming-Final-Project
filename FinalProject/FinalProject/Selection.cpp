@@ -13,6 +13,7 @@ Selection::~Selection()
 
 void Selection::initialise()
 {
+	std::cout << "selection";
 	m_state.ui = new UI[3];
 	Scene::set_button_count(3);
 
