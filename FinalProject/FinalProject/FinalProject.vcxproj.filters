@@ -118,7 +118,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Test.txt" />
     <Text Include="Opening.txt" />
   </ItemGroup>
 </Project>
