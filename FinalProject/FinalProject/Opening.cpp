@@ -1,6 +1,11 @@
 #include "Opening.h"
 #include "Utility.h"
 
+const char BGM_FILEPATH[] = "Disquiet.mp3";
+const int    LOOP_FOREVER = -1;  // -1 means loop forever in Mix_PlayMusic; 0 means play once and loop zero times
+
+Mix_Music* g_music;
+
 Opening::~Opening()
 {
 	delete[] m_state.ui;
@@ -16,6 +21,10 @@ void Opening::initialise()
 	m_state.ui[0].set_text_file_input("Opening.txt");
 	m_state.ui[0].set_textbox_max(39);
 	m_state.ui[0].start_textbox();
+
+	g_music = Mix_LoadMUS(BGM_FILEPATH);
+	Mix_PlayMusic(g_music, LOOP_FOREVER);
+	Mix_VolumeMusic(MIX_MAX_VOLUME / 4);
 }
 
 void Opening::update(float delta_time)

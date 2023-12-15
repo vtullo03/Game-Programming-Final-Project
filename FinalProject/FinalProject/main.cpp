@@ -54,6 +54,18 @@ F_SHADER_PATH[] = "shaders/fragment_textured.glsl";
 
 const float MILLISECONDS_IN_SECOND = 1000.0;
 
+const int CD_QUAL_FREQ = 44100,  // compact disk (CD) quality frequency
+AUDIO_CHAN_AMT = 2,
+AUDIO_BUFF_SIZE = 4096;
+
+const int PLAY_ONCE = 0,
+NEXT_CHNL = -1,  // next available channel
+MUTE_VOL = 0,
+MILS_IN_SEC = 1000,
+ALL_SFX_CHN = -1;
+
+Mix_Chunk* g_button_sound;
+
 // ————— GLOBAL VARIABLES ————— //
 Scene* g_current_scene;
 Opening* g_opening;
@@ -94,6 +106,15 @@ void initialise()
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         WINDOW_WIDTH, WINDOW_HEIGHT,
         SDL_WINDOW_OPENGL);
+
+    Mix_OpenAudio(
+        CD_QUAL_FREQ,        // the frequency to playback audio at (in Hz)
+        MIX_DEFAULT_FORMAT,  // audio format
+        AUDIO_CHAN_AMT,      // number of channels (1 is mono, 2 is stereo, etc).
+        AUDIO_BUFF_SIZE      // audio buffer size in sample FRAMES (total samples divided by channel count)
+    );
+
+    g_button_sound = Mix_LoadWAV("Diamond_Click.wav");
 
     SDL_GLContext context = SDL_GL_CreateContext(g_display_window);
     SDL_GL_MakeCurrent(g_display_window, context);
@@ -176,6 +197,11 @@ void process_input()
                 {
                     g_current_scene->button_index--;
                     if (g_current_scene->button_index < 0) g_current_scene->button_index = g_current_scene->button_count;
+                    Mix_PlayChannel(
+                        NEXT_CHNL,       // using the first channel that is not currently in use...
+                        g_button_sound,  // ...play this chunk of audio...
+                        PLAY_ONCE        // ...once.
+                    );
                 }
                 break;
             case SDLK_d:
@@ -183,6 +209,11 @@ void process_input()
                 {
                     g_current_scene->button_index++;
                     if (g_current_scene->button_index > g_current_scene->button_count) g_current_scene->button_index = 0;
+                    Mix_PlayChannel(
+                        NEXT_CHNL,       // using the first channel that is not currently in use...
+                        g_button_sound,  // ...play this chunk of audio...
+                        PLAY_ONCE        // ...once.
+                    );
                 }
                 break;
             }
